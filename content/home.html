@@ -26,19 +26,24 @@
             <h2>Implementation</h2>
             <h3>1. write the content into an html file</h3>
             <p>
-                HTML was invented to create structured documents that can be accessed via the interweb. If you want more information head over to <a href="https://en.wikipedia.org/wiki/HTML">Wikipedia</a> or <a href="https://letmegooglethat.com/?q=html">Google</a>.  know how to interpret specific elements called 'Tags' and how to display them. The basic structure of an html looks like this:
+                <p>
+                    HTML was invented to create structured documents that can be accessed via the interweb. If you want more information head over to <a href="https://en.wikipedia.org/wiki/HTML">Wikipedia</a> or <a href="https://letmegooglethat.com/?q=html">Google</a>. Browsers know how to interpret specific elements called 'Tags' and how to display them. The basic structure of an html looks like this:
+                </p>
                 <p>
                     <code><BR>
                         &lt;html&gt;<BR>
-                            &lt;head&gt;<BR>
-                                &lt;title&gt;Title that is displayed in the browser tab&lt;title&gt;<BR>
-                            &lt;head&gt;<BR>
-                            &lt;body&gt;<BR>
-                                &lt;h1&gt;Headline&lt;h1&gt;<BR>
-                                &lt;p&gt;paragraph&lt;p&gt;<BR>
-                            &lt;body&gt;<BR>
-                        &lt;html&gt;<BR>
+                        &nbsp;&lt;head&gt;<BR>
+                        &nbsp;&nbsp;&lt;title&gt;Title that is displayed in the browser tab&lt;/title&gt;<BR>
+                        &nbsp;&lt;/head&gt;<BR>
+                        &nbsp;&lt;/body&gt;<BR>
+                        &nbsp;&nbsp;&lt;h1&gt;Headline&lt;/h1&gt;<BR>
+                        &nbsp;&nbsp;&lt;p&gt;paragraph&lt;/p&gt;<BR>
+                        &nbsp;&lt;/body&gt;<BR>
+                        &lt;/html&gt;<BR>
                     </code>
+                </p>
+                <p>
+                    Html files consist of a tree of blocks. The outermost block is the <code>html</code> block, which denotes that the data in this file is an html document. A block is denoted by a start tag like <code>&lt;html&gt;</code> and an end tag like <code>&lt;/html&gt;</code>. Our html block has two children as the <code>head</code> and <code>body</code> block are called. The head block contains the pages title. It usually also holds references to other resources to be loaded (e.g. javascript or css files). The <code>body</code> block contains the visible content of our page. Amongst other block we use <code>h1</code> to create a headline or the <code>p</code> block to create paragraphs in our page. If you want to find out more about the other tags I used in this document, go visit <a href="https://www.w3schools.com/tags/default.asp">W3Schools HTML tag list</a>
                 </p>
             </p>
             <h3>2. Be able to test the page locally</h3>
