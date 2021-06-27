@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <title>Fanderl.rocks</title>
+    </head>
+    <body>
+        <h1>Welcome!</h1>
+        <p>
+            Hi!
+            Great that you made it to my blog. This blog is a hobby project of myself and a place to play around with various technologies. The idea is to create more and more articles that explain how I created and evolved this blog over time. The hope is that this helps and inspires other people on any skill level.
+        </p>
+        <p>
+            About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start with the most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle the next problem. All of the articles will have a very clear goal I try to achieve and the article will explain what I did to achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe there will also be an outlook, if I do already have some follow up topics in mind. So let's go and see where the journey will lead us.
+        </p>
+        <article>
+            <h1>Article 1: Static webpage</h1>
+            <h2>Goal</h2>
+            <p>
+                Well in order to start a blog, you need something that you can show on the web. The easiest things that you can put into the web is a single html page without any styling. To not get lost in layout  design in the very first step I really wanted to just throw out some content. There are already a few things that we have to do:
+            <ol>
+                <li>write the content into an html file, what I am doing right now</li>
+                <li>be able to test the page locally (some browsers don't like opening files from the local drive too much)</li>
+                <li>get a domain, so that we can be found easily</li>
+                <li>put it somewhere, so that it's publicly available - I'll choose S3 on AWS for this purpose</li>
+            </ol>
+            </p>
+            <h2>Implementation</h2>
+            <h3>1. write the content into an html file</h3>
+            <p>
+                HTML was invented to create structured documents that can be accessed via the interweb. If you want more information head over to <a href="https://en.wikipedia.org/wiki/HTML">Wikipedia</a> or <a href="https://letmegooglethat.com/?q=html">Google</a>.  know how to interpret specific elements called 'Tags' and how to display them. The basic structure of an html looks like this:
+                <p>
+                    <code><BR>
+                        &lt;html&gt;<BR>
+                            &lt;head&gt;<BR>
+                                &lt;title&gt;Title that is displayed in the browser tab&lt;title&gt;<BR>
+                            &lt;head&gt;<BR>
+                            &lt;body&gt;<BR>
+                                &lt;h1&gt;Headline&lt;h1&gt;<BR>
+                                &lt;p&gt;paragraph&lt;p&gt;<BR>
+                            &lt;body&gt;<BR>
+                        &lt;html&gt;<BR>
+                    </code>
+                </p>
+            </p>
+            <h3>2. Be able to test the page locally</h3>
+            <p>
+                In order to be able to test the page locally in a proper way, you need a web server. Some browsers have problems displaying pages from the file system (e.g. path to a file on your disk). So I decided to spin up nginx locally using docker and use it a web server that serves static web pages. We won't dive too deep into the topic, because there are quite some elements involved, that would need a lot of explanation. But I'll provide a short guide to get it running.
+                <ol>
+                    <li>
+                        <details>
+                            <summary>Install docker desktop</summary>
+                            First we need to install docker desktop on your computer. You can find the download and instructions how to install <a href="https://www.docker.com/products/docker-desktop">here</a>
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Run nginx without any configuration</summary>
+                            Now we want to run nginx without any configuration just to see if it works. Try executings this from your terminal: <code>docker run --name mynginx1 -p 80:80 -d nginx</code> Don't forget to start docker before running this command. If you go to your browser and type in <code>http://localhost</code> you should see the default nginx start page.
+                        </details>
+                    </li>
+                    <li>
+                        <details>
+                            <summary>Configure nginx to serve pages from the content folder</summary>
+                            Of course it's not very exciting to just show the default nginx start page. In order to change this we have to tell nginx where it can find our html file. Additionally we want to ability to add some configuration to nginx later on. Therefor we need to change how we start nginx. Have a look at the following command:
+                            <code>
+                                docker run --name nginx_fanderl_rocks --mount type=bind,source="$(pwd)"/content,target=/usr/share/nginx/html,readonly --mount type=bind,source="$(pwd)"/nginx_conf,target=/etc/nginx/conf,readonly -p 80:80 -d nginx
+                            </code>
+                            <p><code>--name nginx_fanderl_rocks</code>: name of the docker container on your local computer</p>
+                            <p><code>--mount type=bind,source=./content,target=/usr/share/nginx/html,readonly</code>: this statement tells docker to mount the local folder ./content, which holds our static web pages, to the folder that holds static html files by default in nginx.</p>
+                            <p><code>--mount source=./nginx_conf,target=/etc/nginx/conf,readonly</code>: this statement tells docker to mount the local folder ./nginx_conf, which holds our nginx config files, to the folder that holds the nginx configuration files by default.</p>
+                            <p><code>-p 80:80</code>: this statement tells docker to publis the port 80 through the docker host. This makes it possible that you can type <code>localhost</code> into your browser and see the nginx default start page. Port 80 is the default port for http, the default web protocol</p>
+                            <p><code>-d</code>: tells docker to run as detached process, thus will not respond to stdin anymore. It will also not block your terminal.</p>
+                            <p><code>nginx</code>: tells docker to use the nginx docker image from <a href="https://hub.docker.com/_/nginx">docker hub</a></p>
+                        </details>
+                    </li>
+                </ol>
+            </p>
+        </article>
+        
+    </body>
+</html>
