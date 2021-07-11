@@ -15,12 +15,12 @@
             <h1>Article 1: Static webpage</h1>
             <h2>Goal</h2>
             <p>
-                Well in order to start a blog, you need something that you can show on the web. The easiest things that you can put into the web is a single html page without any styling. To not get lost in layout  design in the very first step I really wanted to just throw out some content. There are already a few things that we have to do:
+                Well in order to start a blog, you need something that you can show on the web. The easiest things that you can put into the web is a single html page without any styling. To not get lost in layout/design in the very first step I really wanted to just throw out some content. There are already a few things that we have to do:
             <ol>
                 <li>write the content into an html file, what I am doing right now</li>
                 <li>be able to test the page locally (some browsers don't like opening files from the local drive too much)</li>
-                <li>get a domain, so that we can be found easily</li>
-                <li>put it somewhere, so that it's publicly available - I'll choose S3 on AWS for this purpose</li>
+                <li>put it somewhere, so that it's publicly available</li>
+                <li>get a domain, so that we can be found easily</li>     
             </ol>
             </p>
             <h2>Implementation</h2>
@@ -65,18 +65,15 @@
                     <li>
                         <details>
                             <summary>Configure nginx to serve pages from the content folder</summary>
-                            Of course it's not very exciting to just show the default nginx start page. In order to change this we have to tell nginx where it can find our html file. Additionally we want to ability to add some configuration to nginx later on. Therefor we need to change how we start nginx. Have a look at the following command:
-                            <code>
-                                docker run --name nginx_fanderl_rocks --mount type=bind,source="$(pwd)"/content,target=/usr/share/nginx/html,readonly --mount type=bind,source="$(pwd)"/nginx_conf,target=/etc/nginx/conf,readonly -p 80:80 -d nginx
-                            </code>
+                            <p>Of course it's not very exciting to just show the default nginx start page. In order to change this we need to properly set up nginx. For now we just want to show the static content from our content folder, so we will stick with the default configuration. All files in '/usr/share/nginx/html' will be served as static content. So we will run the default nginx docker image and mount our content folder at the static content location. This is how to run it:</p>
+                            <p><code>
+                                docker run --name nginx_fanderl_rocks --mount type=bind,source="$(pwd)"/content,target=/usr/share/nginx/html,readonly -p 80:80 -d nginx
+                            </code></p>
                             <p>
                                 <code>--name nginx_fanderl_rocks</code>: name of the docker container on your local computer
                             </p>
                             <p>
                                 <code>--mount type=bind,source=./content,target=/usr/share/nginx/html,readonly</code>: this statement tells docker to mount the local folder ./content, which holds our static web pages, to the folder that holds static html files by default in nginx.
-                            </p>
-                            <p>
-                                <code>--mount source=./nginx_conf,target=/etc/nginx/conf,readonly</code>: this statement tells docker to mount the local folder ./nginx_conf, which holds our nginx config files, to the folder that holds the nginx configuration files by default.
                             </p>
                             <p>
                                 <code>-p 80:80</code>: this statement tells docker to publis the port 80 through the docker host. This makes it possible that you can type <code>localhost</code> into your browser and see the nginx default start page. Port 80 is the default port for http, the default web protocol
@@ -92,10 +89,14 @@
                     <li>
                         <details>
                             <summary>Test page in your local browser</summary>
-                            If you enter <a href="http://localhost/home.html"><code>http://localhost/home.html</code></a> in your browser you will see the page from the content folder rendered in your browser. Notice that the filename after the domain resembles the filename of the file in order content folder. Something worth noting is that just typing <code>localhost</code> into some browsers will not work, because the default protocol for most browser has changed from http to https and we did not have set up serving pages using https. https is the encrypted version of http.
+                            If you enter <a href="http://localhost/"><code>http://localhost/</code></a> in your browser you will see the page from the content folder rendered in your browser. Notice that the filename after the domain resembles the filename of the file in order content folder. Something worth noting is that just typing <code>localhost</code> into some browsers will not work, because the default protocol for most browser has changed from http to https and we did not have set up serving pages using https. https is the encrypted version of http.
                         </details>
                     </li>
                 </ol>
+            </p>
+            <h3>3. Get a domain and host the page</h3>
+            <p>
+                In order to make our webpage accessible from the public internet, we need to make our files publicly available. For this purpose I choose to go with a very simple approach, which is putting files onto <a href="https://aws.amazon.com/s3/">AWS S3 (<b>S</b>imple <b>S</b>torage <b>S</b>ervice)</a>. If configured correctly and it can serve static webpages like ours, without the need for a dedicated server.
             </p>
         </article>
     </body>
