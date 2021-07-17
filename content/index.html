@@ -58,7 +58,8 @@
         <details>
           <summary>Install docker desktop</summary>
           First we need to install docker desktop on your computer. You can find the download and instructions
-a <a href="https://www.docker.com/products/docker-desktop">here</a></details>
+a <a href="https://www.docker.com/products/docker-desktop">here</a>
+        </details>
       </li>
       <li>
         <details>
@@ -107,8 +108,36 @@ a <a href="https://www.docker.com/products/docker-desktop">here</a></details>
     </p>
     <h4>Infrstructure as code</h4>
     <p>
-      A small sidenote
-
+      Something that is very important to me is to be able to set up production resources quickly. This is also true for our infrastructure. Thanks to cloud services that have awesome APIs, this has become increasingly easier in the last years. Since we use AWS there are a few options that we could use to setup our resources:
+      <ol>
+        <li>
+          <details>
+            <summary>Cloudformation</summary>
+            <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> is the most basic way that Amazon provides to provision resources in AWS. Cloudformation resources are organised in stacks, where each stack is described by a template written in json or yaml.
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary>AWS Cloud Development Kit</summary>
+            <a href="https://aws.amazon.com/cdk/?">AWS CDK</a> builds on top of cloudformation. Aside from the basic cloudformation resource called L1 constructs, it offers L2 constructs. L2 constructs are L1 constructs with a usefull set of sensible defaults, so most of the L2 constructs are easier to use. There are even higher level components called patterns, which use multiple constructs from the other levels to complete even bigger tasks.
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary>Terraform</summary>
+            <a href="https://www.terraform.io/">Terraform</a> is a cloud agnostic tool to manage resources. It's similar to cloudformation in what it does, but it can handle multiple clouds. You can even pass parameters from one cloud to the other. It's also not restricted to cloud, you can use it to deploy/manage anything.
+          </details>
+        </li>
+        <li>
+          <details>
+            <summary>AWS CLI</summary>
+            <a href="https://aws.amazon.com/cli/">AWS CLI</a> is a command line based tool to access AWS. There are also approaches where people manage their cloud resources using AWS CLI via shell scripts.
+          </details>
+        </li>
+      </ol>
+      <p>
+        For this blog I will go with AWS CDK. I personally think having sensible defaults is very valuable. I'm also not the biggest fan of terraform, because I like to have the state of the deployment tool inside the cloud I'm using. It's a great tool when you have to deal with managing things across clouds or maybe even on premise. Since we will only do AWS for now and I want to learn AWS CDK we will stick with that.
+      </p>
     </p>
   </article>
 </body>
