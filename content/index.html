@@ -9,29 +9,39 @@
   <p>
     Hi!
   </p>
-    Great that you made it to my blog. This blog is a hobby project of myself and a place to play around withvarious technologies. The idea is to create more and more articles that explain how I created and evolved thisblog over time. The hope is that this helps and inspires other people on any skill level.
+  Great that you made it to my blog. This blog is a hobby project of myself and a place to play around withvarious
+  technologies. The idea is to create more and more articles that explain how I created and evolved thisblog over time.
+  The hope is that this helps and inspires other people on any skill level.
   </p>
   <p>
-    About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start withthe most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle thenext problem. All of the articles will have a very clear goal I try to achieve and the article will explain whatI did to achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe therewill also be an outlook, if I do already have some follow up topics in mind. So let's go and see where thejourney will lead us.
+    About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start withthe
+    most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle thenext
+    problem. All of the articles will have a very clear goal I try to achieve and the article will explain whatI did to
+    achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe therewill also be
+    an outlook, if I do already have some follow up topics in mind. So let's go and see where thejourney will lead us.
   </p>
   <article>
     <h1>Article 1: Static webpage</h1>
     <h2>Goal</h2>
     <p>
-      Well in order to start a blog, you need something that you can show on the web. The easiest things that youcan put into the web is a single html page without any styling. To not get lost in layout/design in the veryfirst step I really wanted to just throw out some content. There are already a few things that we have todo:
+      Well in order to start a blog, you need something that you can show on the web. The easiest things that youcan put
+      into the web is a single html page without any styling. To not get lost in layout/design in the veryfirst step I
+      really wanted to just throw out some content. There are already a few things that we have todo:
     <ol>
-      <li>write the content into an html file, what I am doing right now</li>
-      <li>be able to test the page locally (some browsers don't like opening files from the local drive too much)
-      </li>
-      <li>put it somewhere, so that it's publicly available</li>
+      <li>write the content into an html file</li>
+      <li>be able to test the page locally</li>
+      <li>put it on S3 and make it publicly available</li>
       <li>get a domain, so that we can be found easily</li>
     </ol>
     </p>
     <h2>Implementation</h2>
     <h3>1. write the content into an html file</h3>
     <p>
-    <p> 
-      HTML was invented to create structured documents that can be accessed via the interweb. If you want more information head over to <a href="https://en.wikipedia.org/wiki/HTML">Wikipedia</a> or <a href="https://letmegooglethat.com/?q=html">Google</a>. Browsers know how to interpret specific elements called 'Tags' and how to display them. The basic structure of an html looks like this:
+    <p>
+      HTML was invented to create structured documents that can be accessed via the interweb. If you want more
+      information head over to <a href="https://en.wikipedia.org/wiki/HTML">Wikipedia</a> or <a
+        href="https://letmegooglethat.com/?q=html">Google</a>. Browsers know how to interpret specific elements called
+      'Tags' and how to display them. The basic structure of an html looks like this:
     </p>
     <p>
       <code><BR>
@@ -47,31 +57,49 @@
       </code>
     </p>
     <p>
-        Html files consist of a tree of blocks. The outermost block is the <code>html</code> block, which denotesthat the data in this file is an html document. A block is denoted by a start tag like<code>&lt;html&gt;</code> and an end tag like <code>&lt;/html&gt;</code>. Our html block has two children asthe <code>head</code> and <code>body</code> block are called. The head block contains the pages title. Itusually also holds references to other resources to be loaded (e.g. javascript or css files). The<code>body</code> block contains the visible content of our page. Amongst other block we use <code>h1</code>to create a headline or the <code>p</code> block to create paragraphs in our page. If you want to find outmore about the other tags I used in this document, go visit <a href="https://www.w3schools.com/tags/default.asp">W3Schools HTML tag list</a>
+      Html files consist of a tree of blocks. The outermost block is the <code>html</code> block, which denotesthat the
+      data in this file is an html document. A block is denoted by a start tag like<code>&lt;html&gt;</code> and an end
+      tag like <code>&lt;/html&gt;</code>. Our html block has two children asthe <code>head</code> and <code>body</code>
+      block are called. The head block contains the pages title. Itusually also holds references to other resources to
+      be loaded (e.g. javascript or css files). The<code>body</code> block contains the visible content of our page.
+      Amongst other block we use <code>h1</code>to create a headline or the <code>p</code> block to create paragraphs in
+      our page. If you want to find outmore about the other tags I used in this document, go visit <a
+        href="https://www.w3schools.com/tags/default.asp">W3Schools HTML tag list</a>
     </p>
     </p>
     <h3>2. Be able to test the page locally</h3>
     <p>
-      In order to be able to test the page locally in a proper way, you need a web server. Some browsers haveproblems displaying pages from the file system (e.g. path to a file on your disk). So I decided to spin upnginx locally using docker and use it a web server that serves static web pages. We won't dive too deep intothe topic, because there are quite some elements involved, that would need a lot of explanation. But I'llprovide a short guide to get it running.
+      In order to be able to test the page locally in a proper way, you need a web server. Some browsers haveproblems
+      displaying pages from the file system (e.g. path to a file on your disk). So I decided to spin upnginx locally
+      using docker and use it a web server that serves static web pages. We won't dive too deep intothe topic, because
+      there are quite some elements involved, that would need a lot of explanation. But I'llprovide a short guide to get
+      it running.
     <ol>
       <li>
         <details>
           <summary>Install docker desktop</summary>
           First we need to install docker desktop on your computer. You can find the download and instructions
-a <a href="https://www.docker.com/products/docker-desktop">here</a>
+          a <a href="https://www.docker.com/products/docker-desktop">here</a>
         </details>
       </li>
       <li>
         <details>
           <summary>Run nginx without any configuration</summary>
-          Now we want to run nginx without any configuration just to see if it works. Execute this from yourterminal: <code>docker run --name mynginx1 -p 80:80 -d nginx</code> Don't forget to start dockerbefore running this command. If you go to your browser and type in <code>http://localhost</code> youshould see the default nginx start page.
+          Now we want to run nginx without any configuration just to see if it works. Execute this from yourterminal:
+          <code>docker run --name mynginx1 -p 80:80 -d nginx</code> Don't forget to start dockerbefore running this
+          command. If you go to your browser and type in <code>http://localhost</code> youshould see the default nginx
+          start page.
         </details>
       </li>
       <li>
         <details>
           <summary>Configure nginx to serve pages from the content folder</summary>
           <p>
-            Of course it's not very exciting to just show the default nginx start page. In order to change this we need to properly set up nginx. For now we just want to show the static content from ourcontent folder, so we will stick with the default configuration. All files in'/usr/share/nginx/html' will be served as static content. So we will run the default nginxdocker image and mount our content folder at the static content location. This is how to run it:
+            Of course it's not very exciting to just show the default nginx start page. In order to change this we need
+            to properly set up nginx. For now we just want to show the static content from ourcontent folder, so we will
+            stick with the default configuration. All files in'/usr/share/nginx/html' will be served as static content.
+            So we will run the default nginxdocker image and mount our content folder at the static content location.
+            This is how to run it:
           </p>
           <p><code>
                 docker run --name nginx_fanderl_rocks --mount type=bind,source="$(pwd)"/content,target=/usr/share/nginx/html,readonly -p 80:80 -d nginx
@@ -80,13 +108,18 @@ a <a href="https://www.docker.com/products/docker-desktop">here</a>
             <code>--name nginx_fanderl_rocks</code>: name of the docker container on your local computer
           </p>
           <p>
-            <code>--mount type=bind,source=./content,target=/usr/share/nginx/html,readonly</code>: thisstatement tells docker to mount the local folder ./content, which holds our static web pages, tothe folder that holds static html files by default in nginx.
+            <code>--mount type=bind,source=./content,target=/usr/share/nginx/html,readonly</code>: thisstatement tells
+            docker to mount the local folder ./content, which holds our static web pages, tothe folder that holds static
+            html files by default in nginx.
           </p>
           <p>
-            <code>-p 80:80</code>: this statement tells docker to publis the port 80 through the docker host. This makes it possible that you can type <code>localhost</code> into your browser and seethe nginx default start page. Port 80 is the default port for http, the default web protocol
+            <code>-p 80:80</code>: this statement tells docker to publis the port 80 through the docker host. This makes
+            it possible that you can type <code>localhost</code> into your browser and seethe nginx default start page.
+            Port 80 is the default port for http, the default web protocol
           </p>
           <p>
-            <code>-d</code>: tells docker to run as detached process, thus will not respond to stdin anymore. It will also not block your terminal.
+            <code>-d</code>: tells docker to run as detached process, thus will not respond to stdin anymore. It will
+            also not block your terminal.
           </p>
           <p>
             <code>nginx</code>: tells docker to use the nginx docker image from <a
@@ -97,48 +130,125 @@ a <a href="https://www.docker.com/products/docker-desktop">here</a>
       <li>
         <details>
           <summary>Test page in your local browser</summary>
-          If you enter <a href="http://localhost/"><code>http://localhost/</code></a> in your browser you willsee the page from the content folder rendered in your browser. Notice that the filename after thedomain resembles the filename of the file in order content folder. Something worth noting is thatjust typing <code>localhost</code> into some browsers will not work, because the default protocolfor most browser has changed from http to https and we did not have set up serving pages usinghttps. https is the encrypted version of http. The default configuration for nginx also allows us touse index.html as the root page of our homepage. So http://localhost/ andhttp://localhost/index.html will show you the same content.
+          If you enter <a href="http://localhost/"><code>http://localhost/</code></a> in your browser you willsee the
+          page from the content folder rendered in your browser. Notice that the filename after thedomain resembles the
+          filename of the file in order content folder. Something worth noting is thatjust typing <code>localhost</code>
+          into some browsers will not work, because the default protocolfor most browser has changed from http to https
+          and we did not have set up serving pages usinghttps. https is the encrypted version of http. The default
+          configuration for nginx also allows us touse index.html as the root page of our homepage. So http://localhost/
+          andhttp://localhost/index.html will show you the same content.
         </details>
       </li>
     </ol>
     </p>
-    <h3>3. Get a domain and host the page</h3>
+    <h3>3. Put it on s3 and make it publicly accessible</h3>
     <p>
-      In order to make our webpage accessible from the public internet, we need to make our files publiclyavailable. For this purpose I choose to go with a very simple approach, which is putting files onto <ahref="https://aws.amazon.com/s3/">AWS S3 (<b>S</b>imple <b>S</b>torage <b>S</b>ervice)</a>. Ifconfigured correctly and it can serve static webpages like ours, without the need for a dedicated server.
+      In order to make our webpage accessible from the public internet, we need to make our files publicly available.
+      For this purpose I choose to go with a very simple approach, which is putting files onto <ahref="https:
+        //aws.amazon.com/s3/">AWS S3 (<b>S</b>imple <b>S</b>torage <b>S</b>ervice)</a>. If configured correctly and it
+        can serve static webpages like ours, without the need for a dedicated server.
     </p>
-    <h4>Infrstructure as code</h4>
+    <h4>Infrastructure as code</h4>
     <p>
-      Something that is very important to me is to be able to set up production resources quickly. This is also true for our infrastructure. Thanks to cloud services that have awesome APIs, this has become increasingly easier in the last years. Since we use AWS there are a few options that we could use to setup our resources:
-      <ol>
-        <li>
-          <details>
-            <summary>Cloudformation</summary>
-            <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> is the most basic way that Amazon provides to provision resources in AWS. Cloudformation resources are organised in stacks, where each stack is described by a template written in json or yaml.
-          </details>
-        </li>
-        <li>
-          <details>
-            <summary>AWS Cloud Development Kit</summary>
-            <a href="https://aws.amazon.com/cdk/?">AWS CDK</a> builds on top of cloudformation. Aside from the basic cloudformation resource called L1 constructs, it offers L2 constructs. L2 constructs are L1 constructs with a usefull set of sensible defaults, so most of the L2 constructs are easier to use. There are even higher level components called patterns, which use multiple constructs from the other levels to complete even bigger tasks.
-          </details>
-        </li>
-        <li>
-          <details>
-            <summary>Terraform</summary>
-            <a href="https://www.terraform.io/">Terraform</a> is a cloud agnostic tool to manage resources. It's similar to cloudformation in what it does, but it can handle multiple clouds. You can even pass parameters from one cloud to the other. It's also not restricted to cloud, you can use it to deploy/manage anything.
-          </details>
-        </li>
-        <li>
-          <details>
-            <summary>AWS CLI</summary>
-            <a href="https://aws.amazon.com/cli/">AWS CLI</a> is a command line based tool to access AWS. There are also approaches where people manage their cloud resources using AWS CLI via shell scripts.
-          </details>
-        </li>
-      </ol>
-      <p>
-        For this blog I will go with AWS CDK. I personally think having sensible defaults is very valuable. I'm also not the biggest fan of terraform, because I like to have the state of the deployment tool inside the cloud I'm using. It's a great tool when you have to deal with managing things across clouds or maybe even on premise. Since we will only do AWS for now and I want to learn AWS CDK we will stick with that.
-      </p>
+      Setting up your infrastructure quickly and in a reproducable fashion has become the industry standard through the
+      past few years. Thanks to cloud services that have awesome APIs, this has become increasingly easier in the last
+      years. Since we use AWS there are a few options that we could use to setup our resources:
+    <ol>
+      <li>
+        <details>
+          <summary>Cloudformation</summary>
+          <a href="https://aws.amazon.com/cloudformation/">Cloudformation</a> is the most basic way that Amazon provides
+          to provision resources in AWS. Cloudformation resources are organised in stacks, where each stack is described
+          by a template written in json or yaml.
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>AWS Cloud Development Kit</summary>
+          <a href="https://aws.amazon.com/cdk/?">AWS CDK</a> builds on top of cloudformation. Aside from the basic
+          cloudformation resource called L1 constructs, it offers L2 constructs. L2 constructs are L1 constructs with a
+          usefull set of sensible defaults, so most of the L2 constructs are easier to use. There are even higher level
+          components called patterns, which use multiple constructs from the other levels to complete even bigger tasks.
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>Terraform</summary>
+          <a href="https://www.terraform.io/">Terraform</a> is a cloud agnostic tool to manage resources. It's similar
+          to cloudformation in what it does, but it can handle multiple clouds. You can even pass parameters from one
+          cloud to the other. It's also not restricted to cloud, you can use it to deploy/manage anything.
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>AWS CLI</summary>
+          <a href="https://aws.amazon.com/cli/">AWS CLI</a> is a command line based tool to access AWS. There are also
+          approaches where people manage their cloud resources using AWS CLI via shell scripts.
+        </details>
+      </li>
+    </ol>
+    <p>
+      For this blog I will go with AWS CDK. I personally think having sensible defaults is very valuable. I'm also not
+      the biggest fan of terraform, because I like to have the state of the deployment tool inside the cloud I'm using.
+      It's a great tool when you have to deal with managing things across clouds or maybe even on premise. Since we will
+      only do AWS for now and I want to learn AWS CDK we will stick with that.
     </p>
+    <ol>
+      <li>
+        <details>
+          <summary>Installing the AWS CDK</summary>
+          I used <a href="https://docs.aws.amazon.com/cdk/v2/guide/hello_world.html">this guide from AWS</a> to
+          setup AWS CDK. I did not install it globally, as I'm not a big fan of bloating the global nodejs installation.
+          Instead I created the <code>cdk</code> folder that will just hold the installation of the cdk. That way it
+          will be found by all the CDK apps that will be hosted inside this folder.
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>Creating infrastructure CDK app</summary>
+          By using <code>cdk init infrastructure --language typescript</code> we create a new CDK stack that will
+          hold our infrastructure
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>Create a stack for our public S3 bucket</summary>
+          <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html">This guide</a> explains how to setup static website hosting using S3. It says that we need two S3 buckets that are
+          publicly accessible from the internet. Those S3 buckets must match the domain name we want to have. This is the resulting stack defined in our CDK application: <code>
+export class FanderlRocksStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
+    super(scope, id, props);
+
+    const root_bucket = new s3.Bucket(this, 'fanderl_rocks_domain_root_bucket', {
+      versioned: false,
+      bucketName: 'fanderl.rocks',
+      websiteIndexDocument: 'index.html',
+      publicReadAccess: true,
+      removalPolicy: RemovalPolicy.DESTROY
+    })
+
+    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
+      sources: [s3Deployment.Source.asset('../../content')],
+      destinationBucket: root_bucket
+    })
+
+    new s3.Bucket(this, 'fanderl_rocks_subdomain_bucket', {
+      versioned: false,
+      bucketName: 'www.fanderl.rocks',
+      websiteRedirect: {
+        hostName: 'fanderl.rocks'
+      }
+    })
+  }
+}
+</code>
+        </details>
+      </li>
+    </ol>
+    </p>
+
+    <h3>4. Get a domain</h3>
+
   </article>
 </body>
 
