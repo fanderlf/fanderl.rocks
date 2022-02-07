@@ -9,7 +9,8 @@ new FanderlRocksStack(app, 'SrcStack', {
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
   env: {
-    region: 'eu-west-1'
+    region: 'eu-west-1',
+    account: '***REMOVED***'
   }
 
   /* Uncomment the next line to specialize this stack for the AWS Account
