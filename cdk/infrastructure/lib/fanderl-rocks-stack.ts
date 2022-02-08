@@ -14,20 +14,12 @@ export class FanderlRocksStack extends Stack {
     const subdomain = 'www';
     const domainName = 'fanderl.rocks';
 
-    const root_logs_bucket = new s3.Bucket(this, 'fanderl_rocks_logs_bucket', {
-      versioned: false,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      bucketName: 'fanderl-rocks-logs'
-    });
-
     const root_bucket = new s3.Bucket(this, 'fanderl_rocks_domain_root_bucket', {
       versioned: false,
       bucketName: domainName,
       websiteIndexDocument: 'index.html',
       publicReadAccess: true,
-      removalPolicy: RemovalPolicy.DESTROY,
-      serverAccessLogsBucket: root_logs_bucket,
-      serverAccessLogsPrefix: 'fanderl_rocks_root'
+      removalPolicy: RemovalPolicy.DESTROY
     });
 
     new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
@@ -40,7 +32,8 @@ export class FanderlRocksStack extends Stack {
       bucketName: `${subdomain}.${domainName}`,
       websiteRedirect: {
         hostName: domainName
-      }
+      },
+      removalPolicy: RemovalPolicy.DESTROY
     });
 
     const hosted_zone = route53.HostedZone.fromLookup(this, 'fanderl_rocks_hosted_zone', {domainName});
