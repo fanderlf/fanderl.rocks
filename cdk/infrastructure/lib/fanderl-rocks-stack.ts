@@ -22,11 +22,6 @@ export class FanderlRocksStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY
     });
 
-    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
-      sources: [s3Deployment.Source.asset('../../content')],
-      destinationBucket: root_bucket
-    });
-
     const subdomain_bucket = new s3.Bucket(this, 'fanderl_rocks_subdomain_bucket', {
       versioned: false,
       bucketName: `${subdomain}.${domainName}`,
@@ -34,6 +29,11 @@ export class FanderlRocksStack extends Stack {
         hostName: domainName
       },
       removalPolicy: RemovalPolicy.DESTROY
+    });
+
+    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
+      sources: [s3Deployment.Source.asset('../../content')],
+      destinationBucket: root_bucket
     });
 
     const hosted_zone = route53.HostedZone.fromLookup(this, 'fanderl_rocks_hosted_zone', {domainName});

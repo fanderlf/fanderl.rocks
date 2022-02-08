@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Fanderl.rocks</title>
+  <title>fanderl.rocks</title>
 </head>
 
 <body>
@@ -9,36 +9,38 @@
   <p>
     Hi!
   </p>
-  Great that you made it to my blog. This blog is a hobby project of myself and a place to play around withvarious
-  technologies. The idea is to create more and more articles that explain how I created and evolved thisblog over time.
-  The hope is that this helps and inspires other people on any skill level.
+  Great that you made it to my blog. This blog is a hobby project of myself and a place to play around with various
+  technologies. The idea is to create more and more articles that explain how I created and evolved this blog over time.
+  The hope is that this helps and inspires other people on any skill level. The full code for this blog can be found at any point in time on <a href="https://github.com/fanderlf/fanderl.rocks">github.com/fanderlf/fanderl.rocks</a>.
   </p>
   <p>
-    About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start withthe
-    most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle thenext
-    problem. All of the articles will have a very clear goal I try to achieve and the article will explain whatI did to
-    achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe therewill also be
+    About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start with the
+    most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle the next
+    problem. All of the articles will have a very clear goal I try to achieve and the article will explain what I did to
+    achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe there will also be
     an outlook, if I do already have some follow up topics in mind. So let's go and see where thejourney will lead us.
   </p>
   <article>
     <h1>Article 1: Static webpage</h1>
     <h2>Goal</h2>
     <p>
-      Well in order to start a blog, you need something that you can show on the web. The easiest things that youcan put
-      into the web is a single html page without any styling. To not get lost in layout/design in the veryfirst step I
-      really wanted to just throw out some content. There are already a few things that we have todo:
+      Well in order to start a blog, you need something that you can show on the web. The easiest things that you can
+      put
+      into the web is a single html page without any styling. To not get lost in layout/design in the very first step, I
+      really wanted to just throw out some content. There are already a few things that we have to do:
     <ol>
       <li>write the content into an html file</li>
       <li>be able to test the page locally</li>
       <li>put it on S3 and make it publicly available</li>
       <li>get a domain, so that we can be found easily</li>
+      <li>summary</li>
     </ol>
     </p>
     <h2>Implementation</h2>
     <h3>1. write the content into an html file</h3>
     <p>
     <p>
-      HTML was invented to create structured documents that can be accessed via the interweb. If you want more
+      HTML was invented to create structured documents that can be accessed via the internet. If you want more
       information head over to <a href="https://en.wikipedia.org/wiki/HTML">Wikipedia</a> or <a
         href="https://letmegooglethat.com/?q=html">Google</a>. Browsers know how to interpret specific elements called
       'Tags' and how to display them. The basic structure of an html looks like this:
@@ -57,9 +59,10 @@
       </code>
     </p>
     <p>
-      Html files consist of a tree of blocks. The outermost block is the <code>html</code> block, which denotesthat the
+      Html files consist of a tree of blocks. The outermost block is the <code>html</code> block, which denotes that the
       data in this file is an html document. A block is denoted by a start tag like<code>&lt;html&gt;</code> and an end
-      tag like <code>&lt;/html&gt;</code>. Our html block has two children asthe <code>head</code> and <code>body</code>
+      tag like <code>&lt;/html&gt;</code>. Our html block has two children as the <code>head</code> and
+      <code>body</code>
       block are called. The head block contains the pages title. Itusually also holds references to other resources to
       be loaded (e.g. javascript or css files). The<code>body</code> block contains the visible content of our page.
       Amongst other block we use <code>h1</code>to create a headline or the <code>p</code> block to create paragraphs in
@@ -69,10 +72,11 @@
     </p>
     <h3>2. Be able to test the page locally</h3>
     <p>
-      In order to be able to test the page locally in a proper way, you need a web server. Some browsers haveproblems
-      displaying pages from the file system (e.g. path to a file on your disk). So I decided to spin upnginx locally
-      using docker and use it a web server that serves static web pages. We won't dive too deep intothe topic, because
-      there are quite some elements involved, that would need a lot of explanation. But I'llprovide a short guide to get
+      In order to be able to test the page locally in a proper way, you need a web server. Some browsers have problems
+      displaying pages from the file system (e.g. path to a file on your disk). So I decided to spin up nginx locally
+      using docker and use it a web server that serves static web pages. We won't dive too deep into the topic, because
+      there are quite some elements involved, that would need a lot of explanation. But I'll provide a short guide to
+      get
       it running.
     <ol>
       <li>
@@ -85,9 +89,9 @@
       <li>
         <details>
           <summary>Run nginx without any configuration</summary>
-          Now we want to run nginx without any configuration just to see if it works. Execute this from yourterminal:
-          <code>docker run --name mynginx1 -p 80:80 -d nginx</code> Don't forget to start dockerbefore running this
-          command. If you go to your browser and type in <code>http://localhost</code> youshould see the default nginx
+          Now we want to run nginx without any configuration just to see if it works. Execute this from your terminal:
+          <code>docker run --name mynginx1 -p 80:80 -d nginx</code> Don't forget to start docker before running this
+          command. If you go to your browser and type in <code>http://localhost</code> you should see the default nginx
           start page.
         </details>
       </li>
@@ -96,7 +100,8 @@
           <summary>Configure nginx to serve pages from the content folder</summary>
           <p>
             Of course it's not very exciting to just show the default nginx start page. In order to change this we need
-            to properly set up nginx. For now we just want to show the static content from ourcontent folder, so we will
+            to properly set up nginx. For now we just want to show the static content from our content folder, so we
+            will
             stick with the default configuration. All files in'/usr/share/nginx/html' will be served as static content.
             So we will run the default nginxdocker image and mount our content folder at the static content location.
             This is how to run it:
@@ -108,7 +113,7 @@
             <code>--name nginx_fanderl_rocks</code>: name of the docker container on your local computer
           </p>
           <p>
-            <code>--mount type=bind,source=./content,target=/usr/share/nginx/html,readonly</code>: thisstatement tells
+            <code>--mount type=bind,source=./content,target=/usr/share/nginx/html,readonly</code>: this statement tells
             docker to mount the local folder ./content, which holds our static web pages, tothe folder that holds static
             html files by default in nginx.
           </p>
@@ -130,11 +135,12 @@
       <li>
         <details>
           <summary>Test page in your local browser</summary>
-          If you enter <a href="http://localhost/"><code>http://localhost/</code></a> in your browser you willsee the
-          page from the content folder rendered in your browser. Notice that the filename after thedomain resembles the
-          filename of the file in order content folder. Something worth noting is thatjust typing <code>localhost</code>
-          into some browsers will not work, because the default protocolfor most browser has changed from http to https
-          and we did not have set up serving pages usinghttps. https is the encrypted version of http. The default
+          If you enter <a href="http://localhost/"><code>http://localhost/</code></a> in your browser you will see the
+          page from the content folder rendered in your browser. Notice that the filename after the domain resembles the
+          filename of the file in order content folder. Something worth noting is that just typing
+          <code>localhost</code>
+          into some browsers will not work, because the default protocol for most browser has changed from http to https
+          and we did not have set up serving pages using https. https is the encrypted version of http. The default
           configuration for nginx also allows us touse index.html as the root page of our homepage. So http://localhost/
           andhttp://localhost/index.html will show you the same content.
         </details>
@@ -213,43 +219,120 @@
       <li>
         <details>
           <summary>Create a stack for our public S3 bucket</summary>
-          <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html">This guide</a> explains how to setup static website hosting using S3. It says that we need two S3 buckets that are
-          publicly accessible from the internet. Those S3 buckets must match the domain name we want to have. This is the resulting stack defined in our CDK application: <code>
-export class FanderlRocksStack extends Stack {
-  constructor(scope: Construct, id: string, props?: StackProps) {
-    super(scope, id, props);
-
-    const root_bucket = new s3.Bucket(this, 'fanderl_rocks_domain_root_bucket', {
-      versioned: false,
-      bucketName: 'fanderl.rocks',
-      websiteIndexDocument: 'index.html',
-      publicReadAccess: true,
-      removalPolicy: RemovalPolicy.DESTROY
-    })
-
-    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
-      sources: [s3Deployment.Source.asset('../../content')],
-      destinationBucket: root_bucket
-    })
-
-    new s3.Bucket(this, 'fanderl_rocks_subdomain_bucket', {
-      versioned: false,
-      bucketName: 'www.fanderl.rocks',
-      websiteRedirect: {
-        hostName: 'fanderl.rocks'
-      }
-    })
-  }
-}
+          <a
+            href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/website-hosting-custom-domain-walkthrough.html">This
+            guide</a> explains how to setup static website hosting using S3. It says that we need two S3 buckets that
+          are
+          publicly accessible from the internet. Those S3 buckets must match the domain name we want to have. This is
+          the resulting stack defined in our CDK application: <code><br>
+export class FanderlRocksStack extends Stack {<br>
+&nbsp;&nbsp;constructor(scope: Construct, id: string, props?: StackProps) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;super(scope, id, props);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const subdomain = 'www';<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const domainName = 'fanderl.rocks';<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const root_bucket = new s3.Bucket(this, 'fanderl_rocks_domain_root_bucket', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;versioned: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bucketName: domainName,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;websiteIndexDocument: 'index.html',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;publicReadAccess: true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removalPolicy: RemovalPolicy.DESTROY<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const subdomain_bucket = new s3.Bucket(this, 'fanderl_rocks_subdomain_bucket', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;versioned: false,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bucketName: `${subdomain}.${domainName}`,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;websiteRedirect: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hostName: domainName<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;removalPolicy: RemovalPolicy.DESTROY<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+}<br>
 </code>
+        </details>
+      </li>
+      <li>
+        <details>
+          <summary>Upload the content to S3</summary>
+          <p>
+          In order to be able to access our files from S3, we have to upload them to the bucket. There are several ways to upload files to an S3 bucket. The simplest one is probably to use the AWS CLI. You can upload files by executing the following statement from the root folder of this repository:
+          </p>
+          <p>
+
+          <code>aws s3 sync content/ s3://fanderl.rocks</code>
+          </p>
+          <p>
+            The other method I stumbled across when searching how to setup S3 buckets with CDK, is to use CDK to upload files. I chose to use this approach, because there's nothing extra we need to maintain. CDK is a little bit slowish, if you need to do it often. But I think it's good enough as a start and I want to give it a try. Here's the code from our stack:
+          </p>
+          <p>
+            <code>
+new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {<br>
+&nbsp;&nbsp;sources: [s3Deployment.Source.asset('../../content')],<br>
+&nbsp;&nbsp;destinationBucket: root_bucket<br>
+});
+            </code>
+          </p>
         </details>
       </li>
     </ol>
     </p>
 
     <h3>4. Get a domain</h3>
+    <p>
+      In order to not have a cryptic IP or S3 specific URL we want to get a domain, so that users can just type
+      http://fanderl.rocks into their browser and find our website. In order to do this, we need to register the domain
+      for ourselves and pay a little fee, so that someone redirects us to our website, whenever somebody types the above
+      URL into the browser. The protocol behind this is called <a
+        href="https://en.wikipedia.org/wiki/Domain_Name_System">DNS - Domain Name System</a>. Here's what I did to
+      register the for the content in S3:
+    <ol>
+      <li>
+        <details>
+          <summary>Buy the domain</summary>
+          The first step is to buy the domain and secure it for yourself. This is pretty much straight forward
+          and something that can't be done with CDK. So I will just post <a
+            href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html">this AWS guide</a>
+          that shows you how do this in the AWS console.
+        </details>
+      </li>
+
+      <li>
+        <details>
+          <summary>Add DNS ARecords so that users will be redirected to our S3 bucket to our CDK stack</summary>
+          An ARecord is an entry in the registry of the DNS provider that tells the Browser a specific IP address, when
+          queried for the domain. One can also register subdomains like e.g. <code>www.fanderl.rocks</code>.
+          <code>
+const hosted_zone = route53.HostedZone.fromLookup(this, 'fanderl_rocks_hosted_zone', {domainName});<br>
+<br>
+new route53.ARecord(this, 'fanderl_rocks_root_a_record', {<br>
+&nbsp;&nbsp;zone: hosted_zone,<br>
+&nbsp;&nbsp;target: route53.RecordTarget.fromAlias(new targets.BucketWebsiteTarget(root_bucket))<br>
+});<br>
+<br>
+new route53.ARecord(this, 'fanderl_rocks_subdmain_a_record', {<br>
+&nbsp;&nbsp;zone: hosted_zone,<br>
+&nbsp;&nbsp;recordName: subdomain,<br>
+&nbsp;&nbsp;target: route53.RecordTarget.fromAlias(new targets.BucketWebsiteTarget(subdomain_bucket))<br>
+});<br>
+</code>
+        </details>
+      </li>
+    </ol>
+    </p>
+
+    <h3>5. Summary</h3>
+    <p>
+      Holy, that was a lot of stuff to do and digest. But finally we arrived and have static content delivered on our own custom domain. That's something that we can be very proud. So let's quickly go to <a href="http://fanderl.rocks">fanderl.rocks</a> and have a relaxing cup of coffee that we earnt ourselves.
+    </p>
 
   </article>
+  <p>
+    <h3>Outlook</h3>
+    <p>
+      Now that we set ourselves a basis, we can continue from here on. I already have a small wishlist in the <a href="https://github.com/fanderlf/fanderl.rocks">readme on github</a>. Some of the the topics will definitely be https, a RSS feed and making the page a bit prettier. See you soon!
+    </p>
+  </p>
   <a href="impressum.html">Impressum</a>
 </body>
 
