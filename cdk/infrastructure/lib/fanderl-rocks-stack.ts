@@ -73,7 +73,7 @@ export class FanderlRocksStack extends Stack {
       {
         domainName: wwwFullDomainName,
         hostedZone: hostedZone,
-        region: "us-east-1"
+        region: "us-east-1"  // this needs to us-east-1, otherwise the certifcate can't be used in cloudfront
       }
     )
 
