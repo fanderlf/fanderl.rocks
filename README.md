@@ -9,4 +9,7 @@ Goal of this blog to show everybody how to set up something like this blog. I do
 - make it super pretty
 - content overview
 - cv
+- SSL certificate renewal
+
+# done
 - https
