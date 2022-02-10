@@ -60,11 +60,6 @@ export class FanderlRocksStack extends Stack {
       destinationBucket: root_bucket
     });
 
-    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_subdomain_content', {
-      sources: [s3Deployment.Source.asset('../../content')],
-      destinationBucket: subdomain_bucket
-    });
-
     const hostedZone = route53.HostedZone.fromLookup(this, 'fanderl_rocks_hosted_zone', { domainName });
 
     const certificate = new certificatemanager.DnsValidatedCertificate(
@@ -114,6 +109,13 @@ export class FanderlRocksStack extends Stack {
         }
       ]
     })
+
+    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_subdomain_content', {
+      sources: [s3Deployment.Source.asset('../../content')],
+      destinationBucket: subdomain_bucket,
+      distribution: distribution,
+      distributionPaths: ['/*']
+    });
 
     new route53.ARecord(this, 'fanderl_rocks_subdmain_a_record', {
       zone: hostedZone,

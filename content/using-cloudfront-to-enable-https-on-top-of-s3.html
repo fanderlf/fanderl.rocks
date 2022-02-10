@@ -126,6 +126,20 @@ subdomain_bucket.addToResourcePolicy(new iam.PolicyStatement({<br>
 }));<br>
       </code>
     </p>
+    <p> I couldn't figure out how to setup CloudFront with the S3 redirect that we had configured in the static S3
+      approach. So I also uploaded the files to the subdomain S3 bucket and added a cache invalidation for all files,
+      whenever we upload new files. This prevents CloudFront from still delivering old files, when we uploaded new ones.
+    </p>
+    <p>
+      <code>
+new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_subdomain_content', {<br>
+&nbsp;&nbsp;sources: [s3Deployment.Source.asset('../../content')],<br>
+&nbsp;&nbsp;destinationBucket: subdomain_bucket,<br>
+&nbsp;&nbsp;distribution: distribution,<br>
+&nbsp;&nbsp;distributionPaths: ['/*']<br>
+});<br>
+      </code>
+    </p>
     <h3>Switch our domain in Route53 to use CloudFront instead of S3</h3>
     <p> The last thing we need to do, is to point Route53 to CloudFront instead of S3: </p>
     <p>
