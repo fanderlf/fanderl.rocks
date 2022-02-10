@@ -1,0 +1,149 @@
+<html>
+
+<head>
+  <title>fanderl.rocks - using cloudfront to enable https on top of s3</title>
+</head>
+
+<body>
+  <article>
+    <h1>Article 2: Using AWS CloudFront to enable HTTPS on top of S3</h1>
+    <h2>Goal</h2>
+    <p> In this second article we will have a look at how to enable HTTPS on top of S3. HTTPS encrypts the communication
+      between the server and the client. The main reasons why we want to have HTTPS are:
+    <ul>
+      <li>People on public WiFi have a hard time seeing the content you are browing</li>
+      <li>It's the defacto standard on the world wide web. These days nothing on public internet should be unencrypted
+      </li>
+      <li>Google doesn't like pages without HTTPS</li>
+    </ul> You could argue that it's not 100% necessary, because at the moment we just deliver static content, which
+    doesn't hold any sensitive data. </p>
+    <h2>What do we need to do?</h2>
+    <p>
+    <ol>
+      <li>get a SSL certificate</li>
+      <li>setup an AWS CloudFront distribution using S3 as content source</li>
+      <li>switch our domain in Route53 to use CloudFront instead of S3</li>
+      <li>summary</li>
+    </ol>
+    </p>
+    <h2>Implementation</h2>
+    <h3>1. Get a SSL certificate</h3>
+    <p> The first thing we need to encrypt traffic is a SSL certificate. SSL is a mechanism that's used to encrypt the
+      traffic between browser and Server. The SSL certificate tells the browser that the content it receives from the
+      comes from the domain you typed into the browser address bar. Thus making sure that the website was sent out by
+      the owner of the domain. Kaspersky has <a
+        href="https://www.kaspersky.com/resource-center/definitions/what-is-a-ssl-certificate">a nice explanation</a> of
+      SSL and SSL certificates. Head over there is you want more information. </p>
+    <p> Luckily AWS can issue SSL certificates for domains that you created within your AWS account, which we
+      fortunately did. This is the only thing that you need to do, to create a valid SSL certificate inside your AWS
+      account. <br>
+    </p>
+    <p>
+      <code>
+const certificate = new certificatemanager.DnsValidatedCertificate(<br>
+&nbsp;&nbsp;this,<br>
+&nbsp;&nbsp;"fanderl_rocks_tls_certificate",<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;domainName: wwwFullDomainName,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hostedZone: hostedZone,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;region: "us-east-1"  // this needs to us-east-1, otherwise the certifcate can't be used in cloudfront<br>
+&nbsp;&nbsp;}<br>
+)<br>
+      </code><br>
+    </p>
+    <p> This issues a new DNS validated SSL certificate into AWS Certifcate Manager. It ensures that we own the domain
+      by checking the CNAME record of our domain. </p>
+    <h3>2. Setup an AWS CloudFront distribution using S3 as content source</h3>
+    <p>
+      <a href="https://aws.amazon.com/cloudfront/">AWS CloudFront</a> is a content delivery network with the main
+      purpose of providing edge locations that serve static content which are physically closer to the customers
+      computer. This speeds up download for a better user experience. The main reason we use it is, that S3 does not
+      provide HTTPS support out of the box. It's intended to be used in combination with CloudFront to deliver static
+      web assets. The other big benefit is, that our S3 buckets don't need to be public anymore. So we have a single
+      entry point for our web content, which is CloudFront. In order to set this up, we need a CloudFront
+      distribution:<br>
+    </p>
+    <p>
+      <code>
+const distribution = new cloudfront.CloudFrontWebDistribution(this, 'fanderlf_rocks_cloudfront_distribution', {<br>
+&nbsp;&nbsp;viewerCertificate,<br>
+&nbsp;&nbsp;originConfigs: [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s3OriginSource: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s3BucketSource: subdomain_bucket,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;originAccessIdentity: cloudfrontOAI<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;behaviors: [{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;compress: true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allowedMethods: cloudfront.CloudFrontAllowedMethods.GET_HEAD_OPTIONS,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isDefaultBehavior: true,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;]<br>
+})<br>
+      </code>
+    </p>
+    <p> The CloudFront distribution points to our S3 bucket and redirects traffic from HTTP to HTTPS. The
+      viewerCertificate needs an implementation of the ICertificate interface the we provide like so:<br>
+    </p>
+    <p>
+      <code>
+const viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate({<br>
+&nbsp;&nbsp;certificateArn: certificate.certificateArn,<br>
+&nbsp;&nbsp;env: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;region: "eu-west-1",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;account: "***REMOVED***"<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;node: this.node,<br>
+&nbsp;&nbsp;stack: this,<br>
+&nbsp;&nbsp;metricDaysToExpiry: () =><br>
+&nbsp;&nbsp;&nbsp;&nbsp;new cloudwatch.Metric({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;namespace: "TLS Viewer Certificate Validity",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;metricName: "TLS Viewer Certificate Expired",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}),<br>
+&nbsp;&nbsp;applyRemovalPolicy: () => RemovalPolicy.DESTROY<br>
+}, {<br>
+&nbsp;&nbsp;sslMethod: cloudfront.SSLMethod.SNI,<br>
+&nbsp;&nbsp;securityPolicy: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,<br>
+&nbsp;&nbsp;aliases: [wwwFullDomainName]<br>
+})<br>
+      </code>
+    </p>
+    <p> As the content of our S3 will not be publicly accessible anymore, we need to give CloudFront access to the files
+      in S3. This is done by configuring the origin access identity like this:<br>
+    </p>
+    <p>
+      <code>
+const cloudfrontOAI = new cloudfront.OriginAccessIdentity(this, 'cloudfront-OAI', {<br>
+&nbsp;&nbsp;comment: `OAI for ${this.stackName}`<br>
+});<br>
+<br>
+subdomain_bucket.addToResourcePolicy(new iam.PolicyStatement({<br>
+&nbsp;&nbsp;actions: ['s3:GetObject'],<br>
+&nbsp;&nbsp;resources: [subdomain_bucket.arnForObjects('*')],<br>
+&nbsp;&nbsp;principals: [new iam.CanonicalUserPrincipal(cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId)]<br>
+}));<br>
+      </code>
+    </p>
+    <h3>Switch our domain in Route53 to use CloudFront instead of S3</h3>
+    <p> The last thing we need to do, is to point Route53 to CloudFront instead of S3: </p>
+    <p>
+      <code>
+new route53.ARecord(this, 'fanderl_rocks_subdmain_a_record', {<br>
+&nbsp;&nbsp;zone: hostedZone,<br>
+&nbsp;&nbsp;recordName: wwwFullDomainName,<br>
+&nbsp;&nbsp;target: route53.RecordTarget.fromAlias(new targets.CloudFrontTarget(distribution))<br>
+});<br>
+      </code>
+    </p>
+    <h3>Summary</h3>
+    <p> Our webpage is now accessible only via HTTPS under <a
+        href="https://www.fanderl.rocks">https://www.fanderl.rocks</a>. If somebody tries to access it using HTTP, they
+      will be redirected to HTTPS.</p>
+    <p>
+      <a href="impressum.html">Impressum</a>
+    </p>
+</body>
+
+</html>
