@@ -92,8 +92,8 @@ const distribution = new cloudfront.CloudFrontWebDistribution(this, 'fanderlf_ro
 const viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate({<br>
 &nbsp;&nbsp;certificateArn: certificate.certificateArn,<br>
 &nbsp;&nbsp;env: {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;region: "eu-west-1",<br>
-&nbsp;&nbsp;&nbsp;&nbsp;account: "***REMOVED***"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;region,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;account<br>
 &nbsp;&nbsp;},<br>
 &nbsp;&nbsp;node: this.node,<br>
 &nbsp;&nbsp;stack: this,<br>

@@ -1,6 +1,5 @@
 import { RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as certificatemanager from 'aws-cdk-lib/aws-certificatemanager'
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch'
@@ -9,12 +8,13 @@ import * as iam from 'aws-cdk-lib/aws-iam'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as targets from 'aws-cdk-lib/aws-route53-targets'
 import * as s3Deployment from 'aws-cdk-lib/aws-s3-deployment'
-import { Certificate } from 'crypto';
 
 export class FanderlRocksStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    const region = props?.env?.region || "";
+    const account = props?.env?.account || ""; // fails if it is not set
     const subdomain = 'www';
     const domainName = 'fanderl.rocks';
     const cloudfrontOAI = new cloudfront.OriginAccessIdentity(this, 'cloudfront-OAI', {
@@ -40,9 +40,6 @@ export class FanderlRocksStack extends Stack {
     const subdomain_bucket = new s3.Bucket(this, 'fanderl_rocks_subdomain_bucket', {
       versioned: false,
       bucketName: wwwFullDomainName,
-      // websiteRedirect: {
-      // hostName: domainName
-      // },
       removalPolicy: RemovalPolicy.DESTROY,
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -75,8 +72,8 @@ export class FanderlRocksStack extends Stack {
     const viewerCertificate = cloudfront.ViewerCertificate.fromAcmCertificate({
       certificateArn: certificate.certificateArn,
       env: {
-        region: "eu-west-1",
-        account: "***REMOVED***"
+        region,
+        account
       },
       node: this.node,
       stack: this,
