@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "new_uuid": "ts-node generate_uuid.ts"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
