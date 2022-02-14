@@ -1,0 +1,102 @@
+<html>
+
+<head>
+  <title>fanderl.rocks - creating an Atom feed</title>
+</head>
+
+<body>
+  <article>
+    <h1>Article 3: Creating an Atom feed</h1>
+    <h2>Goal</h2>
+    <p>In this article we want to create an Atom feed for our blog. An Atom feed is very handy, because users that want
+      to follow the blog will be able to subscribe to the Atom feed and will automatically be notified whenever there is
+      new content. I personally use <a href="https://feedly.com">Feedly</a>, but there are a lot of other tools out
+      there. I found <a href="https://zapier.com/blog/best-rss-feed-reader-apps/">this nice article</a> that has other
+      recommendations. </p>
+    <h2>What do we need to do?</h2>
+    <p>
+    <ol>
+      <li>create the Atom feed xml file</li>
+      <li>add a reference to the feed file to index.html</li>
+      <li>summary</li>
+    </ol>
+    </p>
+    <h2>Implementation</h2>
+    <h3>1. Create the Atom feed xml file</h3>
+    <p> In order to provide an Atom feed to the user, we need to describe our blog in the Atom XML format. The
+      specification for this format can be found in <a href="https://datatracker.ietf.org/doc/html/rfc4287">RFC
+        4287</a>. This is the atom.xml for the two last blog posts: </p>
+    <p>
+      <code>
+&lt;?xml version="1.0" encoding="utf-8"?><br>
+&lt;feed xmlns="http://www.w3.org/2005/Atom"><br>
+<br>
+&nbsp;&nbsp;&lt;!-- Feed metadata --><br>
+&nbsp;&nbsp;&lt;title>fanderl.rocks&lt;/title><br>
+&nbsp;&nbsp;&lt;link href="https://www.fanderl.rocks" /><br>
+&nbsp;&nbsp;&lt;updated>2022-02-14T12:00:00Z&lt;/updated><br>
+&nbsp;&nbsp;&lt;author><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;name>Florian Fanderl&lt;/name><br>
+&nbsp;&nbsp;&lt;/author><br>
+&nbsp;&nbsp;&lt;id>urn:uuid:f6b6c8b8-1a30-46b9-b7af-48160b53f3a8&lt;/id><br>
+<br>
+&nbsp;&nbsp;&lt;!-- Feed entries --><br>
+&nbsp;&nbsp;&lt;entry><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title>Creating an atom feed&lt;/title><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;link href="https://www.fanderl.rocks/creating-an-atom-feed.html" /><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;id>urn:uuid:57eac036-b8d0-43c2-963a-c8b561c14c51&lt;/id><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;updated>2022-02-14T12:00:00Z&lt;/updated><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;summary><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In this article we want to create an Atom feed for our blog. An Atom feed is very handy, because users that want to follow the blog<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;will be able to subscribe to the Atom feed and will automatically be notified whenever there is new content.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/summary><br>
+&nbsp;&nbsp;&lt;/entry><br>
+&nbsp;&nbsp;&lt;entry><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;title>Using cloudfront to enable https on top of s3&lt;/title><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;link href="https://www.fanderl.rocks/using-cloudfront-to-enable-https-on-top-of-s3.html" /><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;id>urn:uuid:580422dc-c460-48ef-9043-79233b912c3a&lt;/id><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;updated>2022-02-10T12:00:00Z&lt;/updated><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;summary><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In this second article we will have a look at how to enable HTTPS on top of S3.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/summary><br>
+&nbsp;&nbsp;&lt;/entry><br>
+<br>
+&nbsp;&nbsp;&lt;!-- older entries skipped --><br>
+<br>
+&lt;/feed><br>
+      </code>
+    </p>
+    <h4>Feed metadata</h4>
+    <p> The feed metadata block holds information about the feed itself. The <b>title</b> is the name of the feed, which
+      is basically the website. The <b>link</b> contains the website this feed belongs to. The <b>updated</b> field
+      holds the date of the last update of the feed, which is typically the publishing date of the last entry.
+      <b>Author</b> holds some more information of the author. The last field <b>id</b> provides a technical id to
+      identify this blog/feed. </p>
+    <h4>Feed entries</h4>
+    <p> The feed entries correspond to the single articles on our blog. For every article we create, there will be a
+      matching entry. The <b>title</b> holds the title of the article. <b>Link</b> provides the link to the article,
+      where people can go to read the entire article. <b>Id</b> is a technical id that should be unique for every
+      article. <b>Updated</b> tells the reader when the article was published or last updated. Updated in this case
+      means that the article changed drastically and you want to republish it. Updated should not change on minor
+      updates. <b>Summary</b> provides a summary of the blog entry, that is displayed in the feed reader. </p>
+    <h3>2. Add a reference to the feed file to index.html</h3>
+    <p> Now we need to add information to our homepage that this blog does have an atom feed that people can use to
+      follow our content. We need to a <b>link</b> element with some metadata to the &lt;head> section of index.html:
+    </p>
+    <p>
+      <code>
+&lt;link rel="alternate" type="application/atom+xml" href="atom.xml" title="fanderl.rocks Atom feed">
+      </code>
+    </p>
+    <p>One important bit to mention is, that this link is marked as alternate. This means that the linked element holds
+      an alternate version of this pages content. Thus e.g. Google does not mark the content in the feed as duplicate
+      content, because we state that the feed is an alternate representation of the content on index.html. </p>
+    <h3>3. Summary</h3>
+    <p>This time we created an Atom feed for our users, so that they will be able to subscribe to our blog and get udpated when
+      there is new content available. I've always just used this standard, but I never really dove into the details. So that was
+      pretty interesting. Thanks for reading and see you next time!
+    </p>
+  </article>
+</body>
+
+</html>
