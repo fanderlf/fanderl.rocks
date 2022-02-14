@@ -52,10 +52,10 @@ export class FanderlRocksStack extends Stack {
       principals: [new iam.CanonicalUserPrincipal(cloudfrontOAI.cloudFrontOriginAccessIdentityS3CanonicalUserId)]
     }));
 
-    new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
-      sources: [s3Deployment.Source.asset('../../content')],
-      destinationBucket: root_bucket
-    });
+    // new s3Deployment.BucketDeployment(this, 'fanderl_rocks_static_website_content', {
+    //   sources: [s3Deployment.Source.asset('../../content')],
+    //   destinationBucket: root_bucket
+    // });
 
     const hostedZone = route53.HostedZone.fromLookup(this, 'fanderl_rocks_hosted_zone', { domainName });
 
