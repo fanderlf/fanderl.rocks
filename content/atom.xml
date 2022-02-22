@@ -10,6 +10,13 @@
   <id>urn:uuid:f6b6c8b8-1a30-46b9-b7af-48160b53f3a8</id>
 
   <entry>
+    <title>Basic styling using bootstrap</title>
+    <link href="https://www.fanderl.rocks/basic-styling-using-bootstrap.html" />
+    <id>urn:uuid:572f2e77-3683-466b-9dc5-5a6d9d4e57c8</id>
+    <updated>2022-02-22T14:00:00Z</updated>
+    <summary>In this article we some basic styling to our blog via bootstrap.</summary>
+  </entry>
+  <entry>
     <title>Creating an Atom feed</title>
     <link href="https://www.fanderl.rocks/creating-an-atom-feed.html" />
     <id>urn:uuid:57eac036-b8d0-43c2-963a-c8b561c14c51</id>

@@ -1,59 +1,82 @@
 <html>
 
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>fanderl.rocks</title>
+  <link rel="stylesheet" href="/css/bootstrap-5.1.3.min.css">
+  <link rel="stylesheet" href="/css/custom-styles-1.0.0.css">
   <link rel="alternate" type="application/atom+xml" href="atom.xml" title="fanderl.rocks Atom feed">
 </head>
 
-<body>
-  <h1>Welcome!</h1>
-  <p>
-    Hi!
-  </p>
-  Great that you made it to my blog. This blog is a hobby project of myself and a place to play around with various
-  technologies. The idea is to create more and more articles that explain how I created and evolved this blog over time.
-  The hope is that this helps and inspires other people on any skill level. The full code for this blog can be found at
-  any point in time on <a href="https://github.com/fanderlf/fanderl.rocks">github.com/fanderlf/fanderl.rocks</a>.
-  </p>
-  <p>
-    About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start with the
-    most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle the next
-    problem. All of the articles will have a very clear goal I try to achieve and the article will explain what I did to
-    achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe there will also be
-    an outlook, if I do already have some follow up topics in mind. So let's go and see where thejourney will lead us.
-  </p>
-  <p>
-    Articles:
-  </p>
-  <p>
-  <ul>
-    <li>
-      <a href="creating-an-atom-feed.html">02-14-2022 - creating an atom feed</a>
-    </li>
-    <li>
-      <a href="using-cloudfront-to-enable-https-on-top-of-s3.html">02-10-2022 - using cloudfront to enable https on top of
-        s3</a>
-    </li>
-    <li>
-      <a href="static-web-page-hosted-on-s3.html">02-05-2022 - building a static web page and hosting it on S3</a>
-    </li>
-  </ul>
-  </p>
-  <p>
-    Hint: You can get more information on a list item that has an arrow by clicking on it. Try out here:
-  <ol>
-    <li>
-      <details>
-        <summary>that's the title - click me &#x1F9D0;</summary>
-        There 's more inside &#x1F60E;
-      </details>
-    </li>
-  </ol>
-  </p>
-
-  <p>
-    <a href="impressum.html">Impressum</a>
-  </p>
+<body class="d-flex flex-column h-100">
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/index.html">fanderl.rocks</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/index.html">Overview</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>Welcome!</h1>
+      <p> Hi! </p> Great that you made it to my blog. This blog is a hobby project of myself and a place to play around
+      with various technologies. The idea is to create more and more articles that explain how I created and evolved
+      this blog over time. The hope is that this helps and inspires other people on any skill level. The full code for
+      this blog can be found at any point in time on <a
+        href="https://github.com/fanderlf/fanderl.rocks">github.com/fanderlf/fanderl.rocks</a>. </p>
+      <p> About the style: I really like to iterate when I work. That's also how I will proceed with this blog. Start
+        with the most minimalistic thing that improves something. Focus on it and get it live quickly. After that tackle
+        the next problem. All of the articles will have a very clear goal I try to achieve and the article will explain
+        what I did to achieve that goal and also some of the thoughts why I decided to go for a certain solution. Maybe
+        there will also be an outlook, if I do already have some follow up topics in mind. So let's go and see where
+        thejourney will lead us. </p>
+      <p> Articles: </p>
+      <p>
+      <ul>
+        <li>
+          <a href="basic-styling-using-bootstrap.html">02-16-2022 - basic styling using bootstrap</a>
+        </li>
+        <li>
+          <a href="creating-an-atom-feed.html">02-14-2022 - creating an atom feed</a>
+        </li>
+        <li>
+          <a href="using-cloudfront-to-enable-https-on-top-of-s3.html">02-10-2022 - using cloudfront to enable https on
+            top of s3</a>
+        </li>
+        <li>
+          <a href="static-web-page-hosted-on-s3.html">02-05-2022 - building a static web page and hosting it on S3</a>
+        </li>
+      </ul>
+      </p>
+      <p> Hint: You can get more information on a list item that has an arrow by clicking on it. Try out here:
+      <ol>
+        <li>
+          <details>
+            <summary>that's the title - click me &#x1F9D0;</summary> There 's more inside &#x1F60E;
+          </details>
+        </li>
+      </ol>
+      </p>
+    </div>
+  </main>
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+      <a href="impressum.html">Impressum</a>
+    </div>
+  </footer>
+  <script src="/js/bootstrap-5.1.3.bundle.min.js"></script>
 </body>
 
 </html>

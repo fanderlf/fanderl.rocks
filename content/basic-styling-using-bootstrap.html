@@ -1,0 +1,146 @@
+<html class="h-100">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fanderl.rocks - basic styling using bootstrap</title>
+  <link rel="stylesheet" href="/css/bootstrap-5.1.3.min.css">
+  <link rel="stylesheet" href="/css/custom-styles-1.0.0.css">
+</head>
+
+<body class="d-flex flex-column h-100">
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/index.html">fanderl.rocks</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/index.html">Overview</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>Article 4: Basic styling using bootstrap</h1>
+      <h2>Goal</h2>
+      <p>In this article we're finally going to make our blog not look like crap anymore. We will start to introduce a
+        little bit of styling to make the usability better. We can then also start to promote our blog a bit more. After
+        looking around which CSS libraries are out there, I decided to go with bootstrap for now. The main reason being,
+        that we don't want to waste a lot of time into styling the content ourselves. I'd rather have a nice preset and
+        maybe add a nice theme later on. Since we also do not want to deal with 3rd party servers, we will host the
+        necessary files ourselves.</p>
+      <h2>What do we need to do?</h2>
+      <p>
+      <ol>
+        <li>add bootstrap library to our source files</li>
+        <li>apply necessary classes to the relevant pages</li>
+        <li>summary</li>
+      </ol>
+      </p>
+      <h2>Implementation</h2>
+      <h3>1. add bootstrap library to our source files</h3>
+      <p> First thing we need to do is to <a href="https://getbootstrap.com/docs/5.1/getting-started/download/">download
+          bootstrap</a>. According to <a href="https://getbootstrap.com/docs/5.1/getting-started/contents/">bootstrap
+          content versions</a> we will use the full minified version. Therefore we create a <code>CSS</code> and a
+        <code>JS</code> folder in our content directory. Afterwards we copy <code>bootstrap.min.css</code> and
+        <code>bootstrap.bundle.min.js</code> to the respective directories. To prevent caching when we update to a later
+        bootstrap version, we also include the version in the file name
+        (<code>bootstrap-5.1.3.min.css</code>,<code>bootstrap-5.1.3.bundle.min.js</code>). </p>
+      <p>Next we need to include the libraries in our webpage. So for every page that we want to have bootstrap, we need
+        to add <code>&lt;link rel="stylesheet" href="/css/bootstrap-5.1.3.min.css"></code> to the head section of the
+        page in order to load the stylesheet. We also need to add
+        <code>&lt;script src="/js/bootstrap-5.1.3.bundle.min.js"></script></code> to the bottom of the body section.
+        Javascript should be loaded at the end of the page to prevent it from blocking the rendering of the rest of the
+        page, while the script is loaded and parsed. </p>
+      <h4>More metadata</h4>
+      <p>It's also a good idea to give the browser a bit more information how to display our webpage. Therefore we
+        include two more special tags in the <code>head</code> of the webpage:<br>
+      </p>
+      <p>
+        <code>&lt;meta charset="utf-8"></code><br> Tells the browser the text in our webpage in encoded in UTF-8, which
+        is a <a href="https://en.wikipedia.org/wiki/UTF-8">standard to encode text for computers.</a><br>
+      </p>
+      <p>
+        <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"></code><br> Gives the browser
+        information about the area of the window in which web content can be seen. More information can be found on <a
+          href="https://developer.mozilla.org/en-US/docs/Web/HTML/Viewport_meta_tag">mozilla.org</a>.
+      </p>
+      <h3>2. apply necessary classes to the relevant pages</h3>
+      <p> We will start with a very basic layout. This includes a header for our page, that has a little bit of
+        navigation, and a footer, that will hold the link to the impressum and the last commit link. For the header we
+        change the part after the body tag in our webpage like this: </p>
+      <p>
+        <code>
+&lt;body class="d-flex flex-column h-100"><br>
+&nbsp;&nbsp;&lt;header><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="container-fluid"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a class="navbar-brand" href="#">fanderl.rocks&lt;/a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;span class="navbar-toggler-icon">&lt;/span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/button><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;div class="collapse navbar-collapse" id="navbarCollapse"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ul class="navbar-nav me-auto mb-2 mb-md-0"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;li class="nav-item"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;a class="nav-link" aria-current="page" href="/index.html">Overview&lt;/a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/li><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/ul><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/div><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/nav><br>
+&nbsp;&nbsp;&lt;/header><br>
+        </code>
+      </p>
+      <p>This is basically the example from <a
+          href="https://getbootstrap.com/docs/5.1/examples/sticky-footer-navbar/">bootstrap sticky footer with fixed
+          navbar</a>. In the content of the body the rough layout is done via a flex container. As we want to
+        have our navigation to be sticky at the top, we add <code>fixed-top</code> to the <code>nav</code> tag. The
+        container for the content of our navbar is a fluid container, which automatically uses the full width of the
+        viewport. The button becomes visible when the viewport becomes small enough. Then the actual navigation items
+        disappear and one can use the button that shows up, to open up a navigation menu on the left side of the screen.
+        In order to position the main content properly, we need to add a little padding on top of
+        <code>main > .container</code>. Thus I created a new <code>custom-styles-1.0.0.css</code> file, added it to our
+        css folder and linked it into our html file. Otherwise I just changed to content to be appropriate for our page.
+      </p>
+      <p>For the footer I also just basically copied the recommendation from the bootstrap examples page and adjusted
+        the content.</p>
+      <p>
+        <code>
+&lt:footer class="footer mt-auto py-3 bg-light"><br>
+&nbsp;&nbsp;&lt:div class="container"><br>
+&nbsp;&nbsp; &lt:a href="impressum.html">Impressum&lt:/a> - ...<br>
+&nbsp;&nbsp;&lt:/div><br>
+&lt:/footer>
+        </code>
+      </p>
+      <p>The nice thing about this footer is, that it stays at the bottom of the page, even if the article does not take
+        the entire height of the page. That's because <code>mt-auto</code>, what means <code>margin-top: auto;</code>,
+        uses all available space top of the box, thus pushing the box down to the bottom of the page. </p>
+      <h3>3. Summary</h3>
+      <p>In this article we extended our page with some basic styling using bootstrap. The page now has basic responsive
+        features, making it more suitable for devices of all sizes. It also looks (a little) more polished so we might
+        dare to advertise for a broader audience. Of course the whole layout is still very basic and I'm pretty sure we
+        will evolve it over time. </p>
+      <p></p>
+    </div>
+  </main>
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+      <a href="impressum.html">Impressum</a> - <a
+        href=" https://github.com/fanderlf/fanderl.rocks/commit/bac8ffdc24955cafb4b9433f8d70b72f886b5fcf">last commit -
+        TODO</a>
+    </div>
+  </footer>
+  <script src="/js/bootstrap-5.1.3.bundle.min.js"></script>
+</body>
+
+</html>
