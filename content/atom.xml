@@ -3,12 +3,19 @@
 
   <title>fanderl.rocks</title>
   <link href="https://www.fanderl.rocks" />
-  <updated>2022-02-22T14:00:00Z</updated>
+  <updated>2022-02-24T11:00:00Z</updated>
   <author>
     <name>Florian Fanderl</name>
   </author>
   <id>urn:uuid:f6b6c8b8-1a30-46b9-b7af-48160b53f3a8</id>
 
+  <entry>
+    <title>Motivation</title>
+    <link href="https://www.fanderl.rocks/motivation.html" />
+    <id>urn:uuid:b37f1e80-1d7a-43ea-b733-a54f0b92ba17</id>
+    <updated>2022-02-24T11:00:00Z</updated>
+    <summary>This time you will get to know my motivation for the blog.</summary>
+  </entry>
   <entry>
     <title>Basic styling using bootstrap</title>
     <link href="https://www.fanderl.rocks/basic-styling-using-bootstrap.html" />
