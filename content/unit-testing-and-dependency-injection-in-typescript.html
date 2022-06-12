@@ -1,0 +1,350 @@
+<html class="h-100">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>fanderl.rocks - TODO</title>
+  <link rel="stylesheet" href="/css/bootstrap-5.1.3.min.css">
+  <link rel="stylesheet" href="/css/custom-styles-1.0.0.css">
+</head>
+
+<body class="d-flex flex-column h-100">
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/index.html">fanderl.rocks</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/index.html">overview</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/me.html">me</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/motivation.html">motivation</a>
+            </li>
+          </ul>
+          </ul>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main class="flex-shrink-0">
+    <div class="container">
+      <h1>Article 5: Unit testing and depdency injection in TypeScript</h1>
+      <p class="text-muted"><em>2022-06-12</em></p>
+      <h2>Goal</h2>
+      <p>I recently joined a new company that uses TypeScript. In order to be able to configure the application properly
+        and to apply inversion of control we were looking for a way to structure our TypeScript application. This is
+        usually done by applying <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a>
+        The next few chapters describe the way from the very naive approach to something we were happy with. So let's
+        dive right in!<br>
+        <small class="text-muted">Disclaimer: This article does not mean to be a complete overview nor does it claim to
+          be the only way of doing things. It's an overview of possible solutions we found and subject to change at any
+          time. Any feedback welcome. </small>
+      </p>
+      <h2>Approaches</h2>
+      <ol>
+        <li>testing using no stub/mock at all</li>
+        <li>stubbing modules</li>
+        <li>using types</li>
+        <li>using pick to dynamically generate the types</li>
+        <li>using a class mocking library</li>
+      </ol>
+      <h3>1. testing using noch stub/mock at all</h3>
+      <p>This is the most basic version of testing the consumer class. Please also note that the Dependency class is
+        coupled tightly to the Consumer class. </p>
+      <p class="text-muted">dependency.ts</p>
+      <code>
+export class Dependency {<br>
+&nbsp;&nbsp;someFunction() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return 'someValue'<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.ts</p>
+      <code>
+import { Dependency } from "./dependency";<br>
+<br>
+export class Consumer {<br>
+&nbsp;&nbsp;dependency: Dependency;<br>
+&nbsp;&nbsp;constructor() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.dependency = new Dependency()<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;doThing() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this.dependency.someFunction()<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.integration.test.ts</p>
+      <code>
+import { Consumer } from './consumer'<br>
+<br>
+describe('given a consumer', () => {<br>
+&nbsp;&nbsp;const consumer = new Consumer()<br>
+<br>
+&nbsp;&nbsp;it('should properly do its thing', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('someValue')<br>
+&nbsp;&nbsp;})<br>
+})<br>
+      </code>
+      <h4>pros & cons</h4>
+      <p> + easy<br> + no extra dependencies needed<br>
+      </p>
+      <p> - classes are tightly coupled, without the ability to control instantiation<br> - hard to configure<br> - this
+        is of course an integration test and not a proper unit test as more than one class is tested a the some time<br>
+        - testing two classes at the same time </p>
+      <h3>2. stubbing modules</h3>
+      <p>In this step we will write a proper unit test by stubbing the dependency module.</p>
+      <p class="text-muted">dependency.ts</p>
+      <code>
+export class Dependency {<br>
+&nbsp;&nbsp;someFunction() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return 'someValue'<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.ts</p>
+      <code>
+import { Dependency } from "./dependency";<br>
+<br>
+export class Consumer {<br>
+&nbsp;&nbsp;dependency: Dependency;<br>
+&nbsp;&nbsp;constructor() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.dependency = new Dependency()<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;doThing() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this.dependency.someFunction()<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.module.test.ts</p>
+      <code>
+import { Consumer } from './consumer'<br>
+<br>
+const mockSomeFunction = jest.fn()<br>
+<br>
+jest.mock('./dependency', () => {<br>
+&nbsp;&nbsp;return {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Dependency: jest.fn().mockImplementation(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;someFunction: mockSomeFunction<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;}<br>
+})<br>
+<br>
+beforeEach(() => {<br>
+&nbsp;&nbsp;jest.clearAllMocks()<br>
+})<br>
+<br>
+describe('when doing thing on consumer', () => {<br>
+&nbsp;&nbsp;const consumer = new Consumer()<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;it('should it should return value from some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mockSomeFunction.mockReturnValue('stub value')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('stub value')<br>
+&nbsp;&nbsp;})<br>
+<br>
+  it('should have called some function', () => {<br>
+    consumer.doThing()<br>
+    expect(mockSomeFunction).toHaveBeenCalledTimes(1)<br>
+  })<br>
+})<br>
+      </code>
+      <h4>pros & cons</h4>
+      <p> + works for very naive cases<br> + no extra dependencies needed<br> + it is a proper unit test which tests
+        only the behavior of the Consumer class </p>
+      <p> - still classes are tightly coupled, without the ability to control instantiation<br> - still hard to
+        configure<br> - it's hard to spot the dependency and which parts of the dependency module have to be mocked<br>
+        - setting up the stub is tedious </p>
+      <h3>3. using types</h3>
+      <p>In this version we will use a Type for the dependency and inject the dependency through the constructor.</p>
+      <p class="text-muted">consumer.ts</p>
+      <code>
+type HasSomeFunction = {<br>
+&nbsp;&nbsp;someFunction: () => string<br>
+}<br>
+<br>
+export class Consumer {<br>
+&nbsp;&nbsp;dependency: HasSomeFunction;<br>
+&nbsp;&nbsp;constructor(dependency: HasSomeFunction) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.dependency = dependency<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;doThing() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this.dependency.someFunction()<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.typedependencyinjection.test.ts</p>
+      <code>
+import { Consumer } from './consumer'<br>
+<br>
+describe('when doing thing on consumer', () => {<br>
+&nbsp;&nbsp;const dependency = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;someFunction: jest.fn()<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;const consumer = new Consumer(dependency)<br>
+<br>
+&nbsp;&nbsp;beforeEach(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jest.clearAllMocks()<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;it('should it should return value from some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dependency.someFunction.mockReturnValue('stub value')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('stub value')<br>
+&nbsp;&nbsp;})<br>
+<br>
+&nbsp;&nbsp;it('should have called some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.doThing()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(dependency.someFunction).toHaveBeenCalledTimes(1)<br>
+&nbsp;&nbsp;})<br>
+})<br>
+      </code>
+      <small class="text-muted">Instead of calling jest.clearAllMocks() before every test, one could also just move the
+        whole code into the "it" function. I think this is just a matter of taste.</small>
+      <h4>pros & cons</h4>
+      <p>+ consumer does not know about the implementation of dependency at all<br>+ mock and stub are easier to
+        create<br>+ test is way more readable<br>+ probably the least coupling that is still statically typed</p>
+      <p>- eventually hard to find the real implementation of dependency, depending on how the object graph is built</p>
+      <h3>4. using pick to dynamically generate the types.</h3>
+      <p>From a testing perspective this is the same as before, but we will use Pick from the <a
+          href="https://www.typescriptlang.org/docs/handbook/utility-types.html">TypeScript Utility Types</a> to infer
+        the type from the implementation during compile time.</p>
+      <p class="text-muted">dependency.ts</p>
+      <code>
+  export class Dependency {<br>
+  &nbsp;&nbsp;someFunction() {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;return 'someValue'<br>
+  &nbsp;&nbsp;}<br>
+  }<br>
+        </code>
+      <p class="text-muted">consumer.ts</p>
+      <code>
+import { Dependency } from "./dependency";<br>
+<br>
+export class Consumer {<br>
+&nbsp;&nbsp;dependency: Pick&lt;Dependency, "someFunction">;<br>
+&nbsp;&nbsp;constructor(dependency: Pick&lt;Dependency, "someFunction">) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.dependency = dependency<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;doThing() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this.dependency.someFunction()<br>
+&nbsp;&nbsp;}<br>
+}<br>
+        </code>
+      <p class="text-muted">consumer.typedependencyinjectionwithpick.test.ts</p>
+      <code>
+import { Consumer } from './consumer'<br>
+<br>
+describe('when doing thing on consumer', () => {<br>
+&nbsp;&nbsp;const dependency = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;someFunction: jest.fn()<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;const consumer = new Consumer(dependency)<br>
+<br>
+&nbsp;&nbsp;beforeEach(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;jest.clearAllMocks()<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;it('should it should return value from some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dependency.someFunction.mockReturnValue('stub value')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('stub value')<br>
+&nbsp;&nbsp;})<br>
+<br>
+&nbsp;&nbsp;it('should have called some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.doThing()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(dependency.someFunction).toHaveBeenCalledTimes(1)<br>
+&nbsp;&nbsp;})<br>
+})<br>
+        </code>
+      <h4>pros & cons</h4>
+      <p>+ easy to find the real implementation<br> + test still doesn't know about the real implementation<br>+ no need
+        for a separate type </p>
+      <p>- a little bit of coupling, but you're able to find the real implemntation easily<br>- syntax is very unusual
+        for someone without a TypeScript background</p>
+      <h3>5. using a class mocking library</h3>
+      <p>The last version we will have a look at is to directly inject the class instance and mock it using
+        jest-mock-extended. Instead of just being able to mock a type, this library can also mock classes. </p>
+      <p class="text-muted">dependency.ts</p>
+      <code>
+export class Dependency {<br>
+&nbsp;&nbsp;someFunction() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return 'someValue'<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.ts</p>
+      <code>
+import { Dependency } from "./dependency";<br>
+<br>
+export class Consumer {<br>
+&nbsp;&nbsp;dependency: Dependency;<br>
+&nbsp;&nbsp;constructor(dependency: Dependency) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.dependency = dependency<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;doThing() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this.dependency.someFunction()<br>
+&nbsp;&nbsp;}<br>
+}<br>
+        </code>
+      <p class="text-muted">consumer.classinjection.test.ts</p>
+      <code>
+import { mock, mockReset } from 'jest-mock-extended'<br>
+import { Consumer } from './consumer'<br>
+import { Dependency } from './dependency'<br>
+<br>
+describe('when doing thing on consumer', () => {<br>
+&nbsp;&nbsp;const dependency = mock&lt;Dependency>()<br>
+&nbsp;&nbsp;const consumer = new Consumer(dependency)<br>
+<br>
+&nbsp;&nbsp;beforeEach(() => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mockReset(dependency)<br>
+&nbsp;&nbsp;})<br>
+&nbsp;&nbsp;<br>
+&nbsp;&nbsp;it('should it should return value from some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dependency.someFunction.mockReturnValue('stub value')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('stub value')<br>
+&nbsp;&nbsp;})<br>
+<br>
+&nbsp;&nbsp;it('should have called some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.doThing()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(dependency.someFunction).toHaveBeenCalledTimes(1)<br>
+&nbsp;&nbsp;})<br>
+})<br>
+      </code>
+      <h4>pros & cons</h4>
+      <p>+ probably most straight forward implementation<br>+ coming from other languages probably most easy to
+        understand<br> + no special TypeScript syntax needed<br>+ jest-mock-extended has nice support to assert mocked
+        calls</p>
+      <p>- coupling of implementations<br>- extra dependency to download and maintain</p>
+      <h3>Conclusion</h3>
+      <p>There are quite a few ways to setup a TypeScript application and stub classes/types in unit tests. We will
+        start with the last option as the one is the one that works best with NestJS out of the box. For the frontend we
+        might chose one of the type options as the frontend application is built differently. </p>
+      <p>If you do have any questions, suggestions or feedback, feel free to connect with me on social media. You can
+        find contact information <a href="me.html">here</a>. </p>
+    </div>
+  </main>
+  <footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+      <a href="impressum.html">Impressum</a> - <a
+        href="https://github.com/fanderlf/fanderl.rocks/commit/efa7ce3b5e4950642574272e91497cfa9c8eb9e5">last commit -
+        TODO</a>
+    </div>
+  </footer>
+  <script src="/js/bootstrap-5.1.3.bundle.min.js"></script>
+</body>
+
+</html>

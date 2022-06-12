@@ -17,6 +17,13 @@
     <summary>This time you will get to know my motivation for the blog.</summary>
   </entry>
   <entry>
+    <title>Unit testing and dependency injection in TypeScript</title>
+    <link href="https://www.fanderl.rocks/unit-testing-and-dependency-injection-in-typescript.html" />
+    <id>urn:uuid:71de15c1-1a7f-48ea-a31f-ea503e8930ec</id>
+    <updated>2022-06-12T12:00:00Z</updated>
+    <summary>An overview over why dependency injection is important and how to write proper unit tests in TypeScript using jest.</summary>
+  </entry>
+  <entry>
     <title>Basic styling using bootstrap</title>
     <link href="https://www.fanderl.rocks/basic-styling-using-bootstrap.html" />
     <id>urn:uuid:572f2e77-3683-466b-9dc5-5a6d9d4e57c8</id>
