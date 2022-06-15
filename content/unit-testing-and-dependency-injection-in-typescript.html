@@ -55,6 +55,7 @@
         <li>testing using no stub/mock at all</li>
         <li>stubbing modules</li>
         <li>using types</li>
+        <li>using types and manual mocks</li>
         <li>using pick to dynamically generate the types</li>
         <li>using a class mocking library</li>
       </ol>
@@ -155,10 +156,10 @@ describe('when doing thing on consumer', () => {<br>
 &nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('stub value')<br>
 &nbsp;&nbsp;})<br>
 <br>
-  it('should have called some function', () => {<br>
-    consumer.doThing()<br>
-    expect(mockSomeFunction).toHaveBeenCalledTimes(1)<br>
-  })<br>
+&nbsp;&nbsp;it('should have called some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.doThing()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(mockSomeFunction).toHaveBeenCalledTimes(1)<br>
+&nbsp;&nbsp;})<br>
 })<br>
       </code>
       <h4>pros & cons</h4>
@@ -217,7 +218,57 @@ describe('when doing thing on consumer', () => {<br>
       <p>+ consumer does not know about the implementation of dependency at all<br>+ mock and stub are easier to
         create<br>+ test is way more readable<br>+ probably the least coupling that is still statically typed</p>
       <p>- eventually hard to find the real implementation of dependency, depending on how the object graph is built</p>
-      <h3>4. using pick to dynamically generate the types.</h3>
+      <h3>4. using types and manual mocks</h3>
+      <p>The same version as before, but instead of using jest mocks we create the mock ourselves.</p>
+      <p class="text-muted">consumer.ts</p>
+      <code>
+type HasSomeFunction = {<br>
+&nbsp;&nbsp;someFunction: () => string<br>
+}<br>
+<br>
+export class Consumer {<br>
+&nbsp;&nbsp;dependency: HasSomeFunction;<br>
+&nbsp;&nbsp;constructor(dependency: HasSomeFunction) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;this.dependency = dependency<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;doThing() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return this.dependency.someFunction()<br>
+&nbsp;&nbsp;}<br>
+}<br>
+      </code>
+      <p class="text-muted">consumer.typedwithmanualmock.test.ts</p>
+      <code>
+import { Consumer } from './consumer'<br>
+<br>
+describe('when doing thing on consumer', () => {<br>
+&nbsp;&nbsp;it('should it should return value from some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const dependency = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;someFunction: () => 'stub value'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const consumer = new Consumer(dependency)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(consumer.doThing()).toStrictEqual('stub value')<br>
+&nbsp;&nbsp;})<br>
+<br>
+&nbsp;&nbsp;it('should have called some function', () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;let wasCalled = false<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const dependency = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;someFunction: () => {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wasCalled = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 'stub value'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const consumer = new Consumer(dependency)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;consumer.doThing()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expect(wasCalled).toBeTruthy()<br>
+&nbsp;&nbsp;})<br>
+})<br>
+      </code>
+      <h4>pros & cons</h4>
+      <p>generally the same as before and the following things:</p>
+      <p>+ no crazy mock code<br>+ most flexible</p>
+      <p>- lot of custom code</p>
+      <h3>5. using pick to dynamically generate the types.</h3>
       <p>From a testing perspective this is the same as before, but we will use Pick from the <a
           href="https://www.typescriptlang.org/docs/handbook/utility-types.html">TypeScript Utility Types</a> to infer
         the type from the implementation during compile time.</p>
@@ -274,7 +325,7 @@ describe('when doing thing on consumer', () => {<br>
         for a separate type </p>
       <p>- a little bit of coupling, but you're able to find the real implemntation easily<br>- syntax is very unusual
         for someone without a TypeScript background</p>
-      <h3>5. using a class mocking library</h3>
+      <h3>6. using a class mocking library</h3>
       <p>The last version we will have a look at is to directly inject the class instance and mock it using
         jest-mock-extended. Instead of just being able to mock a type, this library can also mock classes. </p>
       <p class="text-muted">dependency.ts</p>
