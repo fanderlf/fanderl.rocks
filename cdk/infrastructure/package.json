@@ -9,6 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "deploy": "cdk deploy",
+    "diff": "cdk diff",
     "new_uuid": "ts-node generate_uuid.ts"
   },
   "devDependencies": {
