@@ -9,3 +9,6 @@ cdk.out
 
 # MacOS files
 .DS_Store
+
+# ignore the images from new zealand
+content/neuseeland/images*
